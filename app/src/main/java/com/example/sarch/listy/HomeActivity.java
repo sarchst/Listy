@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,11 +26,23 @@ public class HomeActivity extends AppCompatActivity {
     private TaskDbHelper mHelper;
     private ListView mTaskListView;
     private ArrayAdapter<String> mAdapter;
+    private Button addItemButton;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        addItemButton = (Button) findViewById(R.id.add_item_button);
+
+        addItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addListItem();
+            }
+        });
 
         mHelper = new TaskDbHelper(this);
         mTaskListView = (ListView) findViewById(R.id.list_todo);
@@ -37,7 +50,7 @@ public class HomeActivity extends AppCompatActivity {
         updateUI();
     }
 
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu); //inflates = renders
         return super.onCreateOptionsMenu(menu);
@@ -80,7 +93,40 @@ public class HomeActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }*/
+
+    public boolean addListItem() {
+
+        final EditText taskEditText = new EditText(this);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Add a new task")
+                .setMessage("What do you want to do next")
+                .setView(taskEditText)
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = String.valueOf(taskEditText.getText());
+                        SQLiteDatabase db = mHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        values.put(TaskContract.TaskEntry.COL_TASK_TITLE, task);
+                        db.insertWithOnConflict(TaskContract.TaskEntry.TABLE,
+                                null,
+                                values,
+                                SQLiteDatabase.CONFLICT_REPLACE);
+                        db.close();
+                        updateUI();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
+
+
+
+        return true;
     }
+
+
 
     private void updateUI() {
         ArrayList<String> taskList = new ArrayList<>();
