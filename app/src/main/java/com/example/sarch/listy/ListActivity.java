@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,19 +20,16 @@ import com.example.sarch.listy.db.TaskDbHelper;
 import java.util.ArrayList;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class ListActivity extends AppCompatActivity {
     private TaskDbHelper mHelper;
     private ListView mTaskListView;
     private ArrayAdapter<String> mAdapter;
     private Button addItemButton;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_list);
         addItemButton = (Button) findViewById(R.id.add_item_button);
 
         addItemButton.setOnClickListener(new View.OnClickListener() {
@@ -49,51 +44,6 @@ public class HomeActivity extends AppCompatActivity {
 
         updateUI();
     }
-
-   /* @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu); //inflates = renders
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_add_task:
-                final EditText taskEditText = new EditText(this);
-                AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("Add a new task")
-                        .setMessage("What do you want to do next")
-                        .setView(taskEditText)
-                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String task = String.valueOf(taskEditText.getText());
-                                SQLiteDatabase db = mHelper.getWritableDatabase();
-                                ContentValues values = new ContentValues();
-                                values.put(TaskContract.TaskEntry.COL_TASK_TITLE, task);
-                                db.insertWithOnConflict(TaskContract.TaskEntry.TABLE,
-                                        null,
-                                        values,
-                                        SQLiteDatabase.CONFLICT_REPLACE);
-                                db.close();
-                                updateUI();
-                            }
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .create();
-                dialog.show();
-
-
-
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-
-        }
-    }*/
 
     public boolean addListItem() {
 
@@ -142,7 +92,7 @@ public class HomeActivity extends AppCompatActivity {
         }
         if (mAdapter == null) {
             mAdapter = new ArrayAdapter<>(this,
-                    R.layout.to_do_items,
+                    R.layout.to_do_item,
                     R.id.to_do_title,
                     taskList);
             mTaskListView.setAdapter(mAdapter);
